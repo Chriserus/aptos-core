@@ -6,8 +6,8 @@ import { VERSION } from "../version";
  * Client config to override or pass more data to the request
  */
 export type ClientConfig = {
-  token?: string;
-  headers?: Record<string, string | number | boolean>;
+  TOKEN?: string;
+  HEADERS?: Record<string, string | number | boolean>;
 };
 
 /**
@@ -81,12 +81,12 @@ async function axiosRequest<Request, Response>(
   overrides?: ClientConfig,
 ): Promise<AxiosResponse<Response>> {
   const headers: Record<string, string | number | boolean> = {
-    ...overrides?.headers,
+    ...overrides?.HEADERS,
     "x-aptos-client": `aptos-ts-sdk/${VERSION}`,
   };
 
-  if (overrides?.token) {
-    headers.Authorization = `Bearer ${overrides?.token}`;
+  if (overrides?.TOKEN) {
+    headers.Authorization = `Bearer ${overrides?.TOKEN}`;
   }
 
   const requestConfig: AxiosRequestConfig = {

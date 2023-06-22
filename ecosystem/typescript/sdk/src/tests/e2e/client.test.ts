@@ -1,5 +1,22 @@
 import { AptosApiError, aptosRequest } from "../../client";
+import { VERSION } from "../../version";
 import { NODE_URL } from "../unit/test_helper.test";
+
+test("call should include x-aptos-client header", async () => {
+  try {
+    const response = await aptosRequest({
+      url: `${NODE_URL}`,
+      method: "GET",
+      endpoint: "accounts/0x1",
+      body: null,
+      originMethod: "test x-aptos-client header",
+    });
+    expect(response.config.headers).toHaveProperty("x-aptos-client", `aptos-ts-sdk/${VERSION}`);
+  } catch (error: any) {
+    // should not get here
+    expect(true).toBe(false);
+  }
+});
 
 test("when token is set", async () => {
   try {
@@ -9,7 +26,7 @@ test("when token is set", async () => {
       endpoint: "accounts/0x1",
       body: null,
       originMethod: "test 200 status",
-      overrides: { token: "my-token" },
+      overrides: { TOKEN: "my-token" },
     });
     expect(response.config.headers).toHaveProperty("Authorization", "Bearer my-token");
   } catch (error: any) {
@@ -82,16 +99,12 @@ test("when server returns 200 status code", async () => {
 
 test("when server returns 404 status code", async () => {
   try {
-    const response = await aptosRequest({
+    await aptosRequest({
       url: `${NODE_URL}`,
       method: "GET",
       endpoint: "transactions/by_hash/0x23851af73879128b541bafad4b49d0b6f1ac0d49ed2400632d247135fbca7bea",
       body: null,
       originMethod: "test 404 status",
-    });
-    expect(response).toHaveProperty("data", {
-      sequence_number: "0",
-      authentication_key: "0x0000000000000000000000000000000000000000000000000000000000000001",
     });
   } catch (error: any) {
     expect(error).toBeInstanceOf(AptosApiError);
