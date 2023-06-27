@@ -1660,7 +1660,7 @@ impl TransactionOptions {
                     sequence_number,
                 );
                 let transaction = sender_account
-                    .sign_with_transaction_builder(transaction_factory.payload(payload));
+                    .sign_with_transaction_builder(transaction_factory.payload(payload))?;
                 let response = client
                     .submit_and_wait(&transaction)
                     .await
